@@ -1,5 +1,5 @@
 Library to represent an IGMPv2 Multicast Group State machine as defined in RFC 2236
-
+```
  ----------------------------|                |<-----------------------
 |                            |                |timer expired           |
 |               timer expired|                |(notify routing -,      |
@@ -39,3 +39,4 @@ Library to represent an IGMPv2 Multicast Group State machine as defined in RFC 2
 | v2 report rec'd |   |   (start timer,          |
 | (start timer)   |   |    start v1 host timer)  |
  -----------------     --------------------------
+```
