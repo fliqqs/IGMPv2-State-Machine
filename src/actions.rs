@@ -12,7 +12,14 @@ pub fn start_timer<T: TimerService, R: RoutingService>(
     ctx: &ActionContext<T, R>,
     _event: &IgmpV2MulticastGroupEvents,
 ) {
-    ctx.timer_service.start("main");
+    ctx.timer_service.start_timer();
+}
+
+pub fn start_timer_start<T: TimerService, R: RoutingService>(
+    ctx: &ActionContext<T, R>,
+    _event: &IgmpV2MulticastGroupEvents,
+) {
+    ctx.timer_service.start_timer_star();
 }
 
 pub fn notify_routing_plus<T: TimerService, R: RoutingService>(
@@ -29,6 +36,14 @@ pub fn notify_routing_minus<T: TimerService, R: RoutingService>(
     ctx.routing_service.notify_minus();
 }
 
+pub fn send_group_specific_query<T: TimerService, R: RoutingService>(
+    ctx: &ActionContext<T, R>,
+    _event: &IgmpV2MulticastGroupEvents,
+) {
+    // TODO where to store the group?
+    ctx.routing_service.send_group_specific_query("group");
+}
+
 pub fn action_map<T: TimerService, R: RoutingService>(
     action: IgmpV2MulticastGroupStateActions,
 ) -> fn(&ActionContext<T, R>, &IgmpV2MulticastGroupEvents) {
@@ -36,6 +51,7 @@ pub fn action_map<T: TimerService, R: RoutingService>(
         IgmpV2MulticastGroupStateActions::StartTimer => start_timer,
         IgmpV2MulticastGroupStateActions::NotifyRoutingPlus => notify_routing_plus,
         IgmpV2MulticastGroupStateActions::NotifyRoutingMinus => notify_routing_minus,
+        IgmpV2MulticastGroupStateActions::SendGroupSpecificQuery => send_group_specific_query,
         _ => unimplemented!("Action not implemented"),
     }
 }

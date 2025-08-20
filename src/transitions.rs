@@ -28,5 +28,18 @@ pub fn build_transition_table() -> TransitionTable {
         (NoMembersPresent, vec![NotifyRoutingMinus]),
     );
 
-    table
+    table.insert(
+        (MembersPresent, LeaveReceived),
+        (
+            CheckingMembership,
+            vec![StartTimerStar, SendGroupSpecificQuery, StartRetransmitTimer],
+        ),
+    );
+
+    table.insert(
+        (CheckingMembership, V2ReportReceived),
+        (MembersPresent, vec![StartTimer]),
+    );
+
+    return table;
 }

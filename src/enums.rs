@@ -21,7 +21,7 @@ pub enum IgmpV2MulticastGroupEvents {
 pub enum IgmpV2MulticastGroupStateActions {
     StartTimer,
     StartTimerStar,
-    StartRetransmissionTimer,
+    StartRetransmitTimer,
     StartV1HostTimer,
     SendGroupSpecificQuery,
     NotifyRoutingPlus,
