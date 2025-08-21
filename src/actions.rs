@@ -1,9 +1,11 @@
 use crate::enums::{IgmpV2MulticastGroupEvents, IgmpV2MulticastGroupStateActions};
 use crate::services::{RoutingService, TimerService};
+use std::net::Ipv4Addr;
 
 pub struct ActionContext<'a, T: TimerService, R: RoutingService> {
     pub timer_service: &'a T,
     pub routing_service: &'a R,
+    pub group_address: Ipv4Addr,
 }
 
 // -- Actions --
@@ -13,6 +15,13 @@ pub fn start_timer<T: TimerService, R: RoutingService>(
     _event: &IgmpV2MulticastGroupEvents,
 ) {
     ctx.timer_service.start_timer();
+}
+
+pub fn start_retransmit_timer<T: TimerService, R: RoutingService>(
+    ctx: &ActionContext<T, R>,
+    _event: &IgmpV2MulticastGroupEvents,
+) {
+    ctx.timer_service.start_retransmit_timer();
 }
 
 pub fn start_timer_start<T: TimerService, R: RoutingService>(
@@ -40,8 +49,8 @@ pub fn send_group_specific_query<T: TimerService, R: RoutingService>(
     ctx: &ActionContext<T, R>,
     _event: &IgmpV2MulticastGroupEvents,
 ) {
-    // TODO where to store the group?
-    ctx.routing_service.send_group_specific_query("group");
+    ctx.routing_service
+        .send_group_specific_query(ctx.group_address);
 }
 
 pub fn action_map<T: TimerService, R: RoutingService>(
@@ -52,6 +61,8 @@ pub fn action_map<T: TimerService, R: RoutingService>(
         IgmpV2MulticastGroupStateActions::NotifyRoutingPlus => notify_routing_plus,
         IgmpV2MulticastGroupStateActions::NotifyRoutingMinus => notify_routing_minus,
         IgmpV2MulticastGroupStateActions::SendGroupSpecificQuery => send_group_specific_query,
+        IgmpV2MulticastGroupStateActions::StartTimerStar => start_timer_start,
+        IgmpV2MulticastGroupStateActions::StartRetransmitTimer => start_retransmit_timer,
         _ => unimplemented!("Action not implemented"),
     }
 }

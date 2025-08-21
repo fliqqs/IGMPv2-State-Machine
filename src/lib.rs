@@ -15,6 +15,10 @@ impl Fsm {
         }
     }
 
+    pub fn set_current_state(&mut self, state: IgmpV2MulticastGroupStates) {
+        self.state = state;
+    }
+
     pub fn on_event<T: TimerService, R: RoutingService>(
         &mut self,
         event: IgmpV2MulticastGroupEvents,
