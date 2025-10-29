@@ -41,5 +41,10 @@ pub fn build_transition_table() -> TransitionTable {
         (MembersPresent, vec![StartTimer]),
     );
 
+    table.insert(
+        (MembersPresent, V2ReportReceived),
+        (MembersPresent, vec![StartTimer]),
+    );
+
     return table;
 }

@@ -112,3 +112,22 @@ fn members_present_to_checking() {
 
     assert_eq!(all_calls, expected_calls);
 }
+
+#[test]
+fn members_present_v2_rep_recv() {
+    // MembersPresent + V2ReportReceived -> MembersPresent
+    let table: TransitionTable = build_transition_table();
+    let mut fsm = Fsm::new(table);
+    let r = MockRoutingService::new();
+    let t = MockTimerService::new();
+    let ctx = ActionContext {
+        timer_service: &t,
+        routing_service: &r,
+        group_address: Ipv4Addr::new(239, 2, 3, 10),
+    };
+    fsm.set_current_state(IgmpV2MulticastGroupStates::MembersPresent);
+    fsm.on_event(IgmpV2MulticastGroupEvents::V2ReportReceived, &ctx);
+    assert_eq!(fsm.state(), &IgmpV2MulticastGroupStates::MembersPresent);
+    let t_calls = t.calls.borrow();
+    assert_eq!(t_calls.as_slice(), &["StartTimer"]);
+}
